@@ -1,7 +1,7 @@
 ---
 title: "Final_Project_Draft"
 author: "Eldonna Weber"
-date: "4/27/2022"
+date: "5/3/2022"
 output: pdf_document
 ---
 
@@ -9,26 +9,280 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 # Intro
 
-## What
+## What:  
+For my final project, I analyzed Zillow home sales data for Mound,
+MN over the past two years, specially focusing on 3 bedroom, 2+ bathroom houses.
 
-## Why
+## Why:  
+I have a rental house in Mound, MN that I'm planning to put on the market in 
+June and I'm interested to see if the past home sales data will reflect any 
+interesting trends or help me predict the final sale price of my house.
 
-## How
+## How:  
+I started by manually curating a data frame ('moundsales') from Zillow 
+[(Data Source)](https://www.zillow.com/mound-mn/sold/house_type/3-3_beds/2.0-_baths/3_p/?searchQueryState=%7B%22pagination%22%3A%7B%22currentPage%22%3A3%7D%2C%22usersSearchTerm%22%3A%22Mound%2C%20MN%22%2C%22mapBounds%22%3A%7B%22west%22%3A-93.75159852978517%2C%22east%22%3A-93.56963747021486%2C%22south%22%3A44.87695033358592%2C%22north%22%3A44.992152656806155%7D%2C%22mapZoom%22%3A12%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A26000%2C%22regionType%22%3A6%7D%5D%2C%22isMapVisible%22%3Atrue%2C%22filterState%22%3A%7B%22beds%22%3A%7B%22max%22%3A3%2C%22min%22%3A3%7D%2C%22baths%22%3A%7B%22min%22%3A2%7D%2C%22con%22%3A%7B%22value%22%3Afalse%7D%2C%22fore%22%3A%7B%22value%22%3Afalse%7D%2C%22apa%22%3A%7B%22value%22%3Afalse%7D%2C%22mf%22%3A%7B%22value%22%3Afalse%7D%2C%22ah%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22nc%22%3A%7B%22value%22%3Afalse%7D%2C%22rs%22%3A%7B%22value%22%3Atrue%7D%2C%22land%22%3A%7B%22value%22%3Afalse%7D%2C%22tow%22%3A%7B%22value%22%3Afalse%7D%2C%22manu%22%3A%7B%22value%22%3Afalse%7D%2C%22cmsn%22%3A%7B%22value%22%3Afalse%7D%2C%22apco%22%3A%7B%22value%22%3Afalse%7D%2C%22fsba%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D).
+
+The data frame includes 150 instances and 12 variables:  'ID', 'Address', 
+'Beds', 'Baths', 'SQFT', 'Month.Sold', 'Year.Sold', 'Sale.Price', 'Lake.Front', 
+'Year.Built', 'Lot.Size.Sqft', 'Most.Recent.Tax.Assessment'.
+
+I conducted exploratory data analysis of the data frame, created new 
+data subsets, summarized data via histogram, scatter and box plots, determined 
+probability, determined mean/standard deviation/z-score, and conducted 
+regression.
+
+  
 
 # Body
 
+According to Zillow, the were 150 three bedroom, two-plus bathroom houses sold 
+in Mound, MN between April 2020 and April 2022. Mound is a community on 
+Lake Minnetonka, therefore 32 of the 150 houses are lake front properties.  This
+is an important distinction because these houses sold for significantly more 
+than non-lake front houses, usually in the million dollar range. 
+
+My house was built in 1948, has 1859 finished sqft and includes three bedrooms
+and two baths.  The house sits on a 10,000 sqft, non-lake front, lot and was 
+assessed at $245,000 in 2021. 
+
+I'd like to understand the relationship between sale price and the most recent
+tax assessment data and determine the probability of my house selling for over 
+$300,000.
+
+
+
 # Topics From Class
 
-## Topic 1:
+## Topic 1: Data Basics
 
-## Topic 2:
+For this observational study, I created a data frame labeled 'moundsales'.  In 
+addition, I created a subset labeled 'nonlf' that only includes non-lake front
+houses because including lake front houses skews the sale price and tax 
+assessment data.
 
-## Topic 3:
+```{r}
+moundsales <- read.table("moundsales.csv", sep = ",", header = TRUE)
+```
 
-## Topic 4:
 
-## Topic 5:
+```{r}
+nonlf <- subset(moundsales, moundsales$Lake.Front == 'N')
+```
+
+I conducted a number of various data exploration activities in R (e.g., dim, 
+length, names, summary, head, tail, etc.) to anlayze both the 'moundsales' and
+'nonlf' data frames.  See Appendix for more details.
+
+
+## Topic 2:  Summarizing Data
+
+The mean sale price for lake front houses was $888,192, while the mean sale 
+price for non-lake front houses is $324,801.
+
+```{r}
+lakefront <- subset(moundsales, moundsales$Lake.Front == 'Y')
+summary(lakefront)
+boxplot(moundsales$Sale.Price ~ moundsales$Lake.Front)
+```
+    
+
+Only 46 houses, or 39%, sold for under $300,000, which supports my realator's 
+claim that there has been a shortage of houses under $300,000 for sale in 
+Mound, MN.
+
+
+```{r}
+under300k <- subset(nonlf, nonlf$Sale.Price < 300000)
+dim(under300k)
+```
+
+
+Of the 46 houses that sold for more than $300,000, 16 had a recent tax 
+assessment of $245,000 or below.
+
+
+```{r}
+S300kT245 <- subset(nonlf, nonlf$Sale.Price > 300000 & nonlf$Most.Recent.Tax.Assessment < 246000)
+dim(S300kT245)
+```
+
+
+
+
+## Topic 3: Probability
+
+
+The probability of a three bedroom, two-plus bathroom house in Mound, MN selling
+for $300,000 or more given it is not lake front is 61%.
+
+```{r}
+Over299k <- subset(nonlf, nonlf$Sale.Price > 299999)
+72/118
+```
+
+
+ 
+The probability of a three bedroom, two-plus bathroom house in Mound, MN selling
+for $1 million or more given it has lake front is 28%.
+```{r}
+table(moundsales$Lake.Front)
+```
+
+```{r}
+milsale <- subset(moundsales, moundsales$Sale.Price > 999999)
+View(milsale)
+```
+
+```{r}
+9/32
+```
+
+
+
+## Topic 4: Normal Distribution
+
+The sale price distribution for the 'nonlf' data set is unimodal and normal with
+a slight skew to the right.  The distribution has the following statistics:
+
+mean = 324801
+sd = 74870
+x = 300000
+Z-score =  - .331
+
+There is a 63% probability that my house will sell for over $300k.
+
+
+
+```{r}
+format(nonlf$Sale.Price, scientific = FALSE)
+hist(nonlf$Sale.Price)
+```
+
+```{r}
+sd(nonlf$Sale.Price)
+```
+
+
+Given: 
+
+mean = 324801
+sd = 74870
+x = 300000
+
+```{r}
+(300000 - 324801)/74870
+```
+Answer:  z-score = - .331
+
+
+```{r}
+1 - pnorm(-.331)
+```
+Answer:  63%
+
+
+
+## Topic 5: Regression
+
+
+According to the regression data below, there is a very high correlation between
+the 'Sale.Price' and 'Most.Recent.Tax.Assessment' data.  The intercept value 
+indicates that one could expect a house to sell for a premium of $20,934 over
+the most recent tax assessment for the house.
+
+
+
+```{r}
+plot(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment)
+lm(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment)
+summary(lm(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment))
+```
+
 
 # Conclusion
+
+In conclusion, I determined that there is a very high correlation between sale 
+price and the most recent tax assessment for 3 bedroom, 2+ bath houses sold in 
+Mound, MN in the past two years.  During this time, 72 non-lake front houses 
+were sold for $300,000 or more and there is a 63% probability that my house will 
+sell for $300,000 or more.  As a side note, I also learned that if my property
+were to have lake front, there would be a 28% probability of selling my property
+for $1 million or more!
+
+
+
+
+
+
+# APPENDIX
+
+### 'moundsales' Data Set
+
+```{r}
+moundsales <- read.table("moundsales.csv", sep = ",", header = TRUE)
+```
+
+
+```{r}
+dim(moundsales)
+length(dim(moundsales))
+names(moundsales)
+```
+
+```{r}
+head(moundsales)
+tail(moundsales)
+```
+
+```{r}
+summary(moundsales$Sale.Price)
+summary(moundsales$Most.Recent.Tax.Assessment)
+```
+```{r}
+table(moundsales$Lake.Front)
+```
+
+```{r}
+milsale <- subset(moundsales, moundsales$Sale.Price > 999999)
+View(milsale)
+```
+
+
+```{r}
+lakefront <- table(moundsales$Lake.Front)
+barplot(lakefront)
+```
+### 'nonlf' Data Set
+
+```{r}
+nonlf <- subset(moundsales, moundsales$Lake.Front == 'N')
+```
+
+
+```{r}
+summary(nonlf$Sale.Price)
+summary(nonlf$Most.Recent.Tax.Assessment)
+```
+
+```{r}
+summary(nonlf$SQFT)
+```
+
+```{r}
+summary(nonlf$Lot.Size.Sqft)
+```
+```{r}
+summary(nonlf$Year.Built)
+```
+
+```{r}
+under300k <- subset(nonlf, nonlf$Sale.Price < 300000)
+dim(under300k)
+```
+
+
+
+
