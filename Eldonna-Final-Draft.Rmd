@@ -221,9 +221,10 @@ sell for $300,000 or more.  As a side note, I also learned that if my property
 were to have lake front, there would be a 28% probability of selling my property
 for $1 million or more!
 
-
-
-
+```{r}
+library(rmarkdown) # loads rmarkdown library
+render("Eldonna-Final-Draft.Rmd", md_document(), output_file = "README.md") # converts Rmd -> md, writes to README.md
+```
 
 
 # APPENDIX

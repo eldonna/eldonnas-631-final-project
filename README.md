@@ -71,50 +71,27 @@ sale price for non-lake front houses is $324,801.
     lakefront <- subset(moundsales, moundsales$Lake.Front == 'Y')
     summary(lakefront)
 
-    ##        ID                      Address  
-    ##  Min.   :  2.00   1579 Bluebird Ln : 1  
-    ##  1st Qu.: 38.50   1721 Eagle Ln    : 1  
-    ##  Median : 88.00   1778 Shorewood Ln: 1  
-    ##  Mean   : 78.38   1791 Resthaven Ln: 1  
-    ##  3rd Qu.:119.75   1969 Lakeside Ln : 1  
-    ##  Max.   :150.00   2033 Arbor Ln    : 1  
-    ##                   (Other)          :26  
-    ##       Beds       Baths            SQFT     
-    ##  Min.   :3   Min.   :2.000   Min.   :1302  
-    ##  1st Qu.:3   1st Qu.:2.000   1st Qu.:1718  
-    ##  Median :3   Median :3.000   Median :2239  
-    ##  Mean   :3   Mean   :3.078   Mean   :2316  
-    ##  3rd Qu.:3   3rd Qu.:4.000   3rd Qu.:2552  
-    ##  Max.   :3   Max.   :5.000   Max.   :4153  
-    ##                                            
-    ##    Month.Sold   Year.Sold      Sale.Price     
-    ##  Jul    :8    Min.   :2020   Min.   : 445000  
-    ##  Dec    :5    1st Qu.:2020   1st Qu.: 700000  
-    ##  Apr    :4    Median :2020   Median : 850000  
-    ##  Aug    :4    Mean   :2021   Mean   : 888192  
-    ##  Mar    :3    3rd Qu.:2021   3rd Qu.:1035000  
-    ##  Nov    :2    Max.   :2022   Max.   :1670000  
-    ##  (Other):6                                    
-    ##  Lake.Front   Year.Built   Lot.Size.Sqft  
-    ##  N: 0       Min.   :1910   Min.   : 4356  
-    ##  Y:32       1st Qu.:1946   1st Qu.: 7840  
-    ##             Median :1972   Median : 9583  
-    ##             Mean   :1968   Mean   :10911  
-    ##             3rd Qu.:1990   3rd Qu.:12306  
-    ##             Max.   :2020   Max.   :28750  
-    ##                                           
-    ##  Most.Recent.Tax.Assessment
-    ##  Min.   : 411000           
-    ##  1st Qu.: 637750           
-    ##  Median : 705000           
-    ##  Mean   : 749812           
-    ##  3rd Qu.: 855750           
-    ##  Max.   :1344000           
-    ## 
+    ##        ID           Address               Beds       Baths            SQFT       Month.Sold          Year.Sold      Sale.Price     
+    ##  Min.   :  2.00   Length:32          Min.   :3   Min.   :2.000   Min.   :1302   Length:32          Min.   :2020   Min.   : 445000  
+    ##  1st Qu.: 38.50   Class :character   1st Qu.:3   1st Qu.:2.000   1st Qu.:1718   Class :character   1st Qu.:2020   1st Qu.: 700000  
+    ##  Median : 88.00   Mode  :character   Median :3   Median :3.000   Median :2239   Mode  :character   Median :2020   Median : 850000  
+    ##  Mean   : 78.38                      Mean   :3   Mean   :3.078   Mean   :2316                      Mean   :2021   Mean   : 888192  
+    ##  3rd Qu.:119.75                      3rd Qu.:3   3rd Qu.:4.000   3rd Qu.:2552                      3rd Qu.:2021   3rd Qu.:1035000  
+    ##  Max.   :150.00                      Max.   :3   Max.   :5.000   Max.   :4153                      Max.   :2022   Max.   :1670000  
+    ##   Lake.Front          Year.Built   Lot.Size.Sqft   Most.Recent.Tax.Assessment
+    ##  Length:32          Min.   :1910   Min.   : 4356   Min.   : 411000           
+    ##  Class :character   1st Qu.:1946   1st Qu.: 7840   1st Qu.: 637750           
+    ##  Mode  :character   Median :1972   Median : 9583   Median : 705000           
+    ##                     Mean   :1968   Mean   :10911   Mean   : 749813           
+    ##                     3rd Qu.:1990   3rd Qu.:12306   3rd Qu.: 855750           
+    ##                     Max.   :2020   Max.   :28750   Max.   :1344000
 
-    boxplot(moundsales$Sale.Price ~ moundsales$Lake.Front)
+    boxplot((moundsales$Sale.Price ~ moundsales$Lake.Front), main="Sale Price by 
+            Lake Front & Non-Lake Front",
+      xlab="Lake Front",
+      ylab="Sale Price")
 
-![](README_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-31-1.png)
 
 Only 46 houses, or 39%, sold for under $300,000, which supports my
 realator’s claim that there has been a shortage of houses under $300,000
@@ -125,7 +102,7 @@ for sale in Mound, MN.
 
     ## [1] 46 12
 
-Of the 46 houses that sold for more than $300,000, 16 had a recent tax
+Of the 46 houses that sold for under $300,000, 16 had a recent tax
 assessment of $245,000 or below.
 
     S300kT245 <- subset(nonlf, nonlf$Sale.Price > 300000 & nonlf$Most.Recent.Tax.Assessment < 246000)
@@ -169,36 +146,12 @@ mean = 324801 sd = 74870 x = 300000 Z-score = - .331
 
 There is a 63% probability that my house will sell for over $300k.
 
-    format(nonlf$Sale.Price, scientific = FALSE)
+    options(scipen=999)
+    hist((nonlf$Sale.Price), main="Non-Lake Front Sale Price Histogram",
+      ylab="Frequency",
+      xlab="Sale Price")
 
-    ##   [1] "341000" "346000" "330000" "315000" "322000"
-    ##   [6] "318000" "360000" "427900" "315000" "535000"
-    ##  [11] "299251" "400000" "273000" "280000" "350000"
-    ##  [16] "118400" "290000" "302000" "335000" "302000"
-    ##  [21] "490000" "300000" "386000" "310000" "250000"
-    ##  [26] "430000" "370000" "387500" "365000" "295000"
-    ##  [31] "385000" "320000" "292000" "452061" "425000"
-    ##  [36] "395000" "287000" "582500" "425000" "330000"
-    ##  [41] "232500" "375000" "310000" "300000" "480000"
-    ##  [46] "305000" "518500" "350000" "342500" "355000"
-    ##  [51] "333000" "354000" "320000" "420000" "396000"
-    ##  [56] "340000" "339900" "290000" "271900" "320000"
-    ##  [61] "312999" "215000" "281500" "355000" "370000"
-    ##  [66] "325000" "435000" "305000" "360000" "289500"
-    ##  [71] "449051" "280000" "325000" "240000" "235000"
-    ##  [76] "400000" "390000" "300000" "250000" "465000"
-    ##  [81] "237000" "279000" "177000" "265000" "271000"
-    ##  [86] "350000" "270000" "320678" "270000" "272500"
-    ##  [91] "275000" "268000" "339000" "200000" "262000"
-    ##  [96] "281685" "315000" "350000" "278900" "275000"
-    ## [101] "435000" "225000" "319000" "236400" "335000"
-    ## [106] "245000" "265000" "430000" "270000" "226600"
-    ## [111] "295000" "240000" "275000" "289900" "228000"
-    ## [116] "330000" "329900" "222000"
-
-    hist(nonlf$Sale.Price)
-
-![](README_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](README_files/figure-markdown_strict/unnamed-chunk-38-1.png)
 
     sd(nonlf$Sale.Price)
 
@@ -227,21 +180,14 @@ between the ‘Sale.Price’ and ‘Most.Recent.Tax.Assessment’ data. The
 intercept value indicates that one could expect a house to sell for a
 premium of $20,934 over the most recent tax assessment for the house.
 
-    plot(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment)
+    options(scipen=999)
+    plot((moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment), main=
+           "Correlation Between Sale Price & Tax Assessment",
+      ylab="Sale Price",
+      xlab="Most Recent Tax Assessment")
+    abline(lm(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment))
 
-![](README_files/figure-markdown_strict/unnamed-chunk-14-1.png)
-
-    lm(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment)
-
-    ## 
-    ## Call:
-    ## lm(formula = moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment)
-    ## 
-    ## Coefficients:
-    ##                           (Intercept)  
-    ##                             20934.465  
-    ## moundsales$Most.Recent.Tax.Assessment  
-    ##                                 1.131
+![](README_files/figure-markdown_strict/unnamed-chunk-42-1.png)
 
     summary(lm(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment))
 
@@ -254,28 +200,15 @@ premium of $20,934 over the most recent tax assessment for the house.
     ## -305751  -44941  -16431   30781  510236 
     ## 
     ## Coefficients:
-    ##                                        Estimate
-    ## (Intercept)                           2.093e+04
-    ## moundsales$Most.Recent.Tax.Assessment 1.131e+00
-    ##                                       Std. Error
-    ## (Intercept)                            1.560e+04
-    ## moundsales$Most.Recent.Tax.Assessment  3.580e-02
-    ##                                       t value
-    ## (Intercept)                             1.342
-    ## moundsales$Most.Recent.Tax.Assessment  31.596
-    ##                                       Pr(>|t|)
-    ## (Intercept)                              0.182
-    ## moundsales$Most.Recent.Tax.Assessment   <2e-16
-    ##                                          
-    ## (Intercept)                              
-    ## moundsales$Most.Recent.Tax.Assessment ***
+    ##                                         Estimate Std. Error t value            Pr(>|t|)    
+    ## (Intercept)                           20934.4650 15604.0677   1.342               0.182    
+    ## moundsales$Most.Recent.Tax.Assessment     1.1311     0.0358  31.596 <0.0000000000000002 ***
     ## ---
-    ## Signif. codes:  
-    ## 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Residual standard error: 97490 on 148 degrees of freedom
     ## Multiple R-squared:  0.8709, Adjusted R-squared:   0.87 
-    ## F-statistic: 998.3 on 1 and 148 DF,  p-value: < 2.2e-16
+    ## F-statistic: 998.3 on 1 and 148 DF,  p-value: < 0.00000000000000022
 
 # Conclusion
 
@@ -304,85 +237,17 @@ more!
 
     names(moundsales)
 
-    ##  [1] "ID"                        
-    ##  [2] "Address"                   
-    ##  [3] "Beds"                      
-    ##  [4] "Baths"                     
-    ##  [5] "SQFT"                      
-    ##  [6] "Month.Sold"                
-    ##  [7] "Year.Sold"                 
-    ##  [8] "Sale.Price"                
-    ##  [9] "Lake.Front"                
-    ## [10] "Year.Built"                
-    ## [11] "Lot.Size.Sqft"             
-    ## [12] "Most.Recent.Tax.Assessment"
+    ##  [1] "ID"                         "Address"                    "Beds"                       "Baths"                     
+    ##  [5] "SQFT"                       "Month.Sold"                 "Year.Sold"                  "Sale.Price"                
+    ##  [9] "Lake.Front"                 "Year.Built"                 "Lot.Size.Sqft"              "Most.Recent.Tax.Assessment"
 
     head(moundsales)
-
-    ##   ID            Address Beds Baths SQFT
-    ## 1  1 4674 Cumberland Rd    3   2.0 2369
-    ## 2  2  6641 Halstead Ave    3   3.0 2092
-    ## 3  3   4767 Richmond Rd    3   2.0 1500
-    ## 4  4 4515 Manchester Rd    3   2.0 1931
-    ## 5  5  6117 Beachwood Rd    3   2.5 2400
-    ## 6  6     4812 Lanark Rd    3   2.0 2010
-    ##   Month.Sold Year.Sold Sale.Price Lake.Front
-    ## 1        Apr      2022     341000          N
-    ## 2        Apr      2022     980000          Y
-    ## 3        Apr      2022     346000          N
-    ## 4        Mar      2022     330000          N
-    ## 5        Mar      2022     315000          N
-    ## 6        Mar      2022     322000          N
-    ##   Year.Built Lot.Size.Sqft
-    ## 1       1984          6534
-    ## 2       1980         10018
-    ## 3       1981          5662
-    ## 4       1920          8276
-    ## 5       1970         12632
-    ## 6       1987          9583
-    ##   Most.Recent.Tax.Assessment
-    ## 1                     290000
-    ## 2                     631000
-    ## 3                     207000
-    ## 4                     240000
-    ## 5                     282000
-    ## 6                     256000
-
     tail(moundsales)
-
-    ##      ID           Address Beds Baths SQFT
-    ## 145 145 5736 Lynwood Blvd    3     2 1939
-    ## 146 146   4714 Hanover Rd    3     2 1630
-    ## 147 147    4959 Leslie Rd    3     3 2729
-    ## 148 148    5447 Breezy Rd    3     2 2047
-    ## 149 149     2740 Grove Ln    3     2 1426
-    ## 150 150   3201 Charles Ln    3     4 2475
-    ##     Month.Sold Year.Sold Sale.Price Lake.Front
-    ## 145        Apr      2020     289900          N
-    ## 146        Apr      2020     228000          N
-    ## 147        Apr      2020     330000          N
-    ## 148        Apr      2020     329900          N
-    ## 149        Apr      2020     222000          N
-    ## 150        Apr      2020    1100000          Y
-    ##     Year.Built Lot.Size.Sqft
-    ## 145       1910         16553
-    ## 146       1972          6534
-    ## 147       1965         17860
-    ## 148       1946         10018
-    ## 149       1984         10055
-    ## 150       1988         13068
-    ##     Most.Recent.Tax.Assessment
-    ## 145                     273000
-    ## 146                     234000
-    ## 147                     334000
-    ## 148                     312000
-    ## 149                     222000
-    ## 150                    1001000
 
     summary(moundsales$Sale.Price)
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    ##  118400  287625  337000  444991  451308 1670000
+    ##  118400  287625  337000  444991  451309 1670000
 
     summary(moundsales$Most.Recent.Tax.Assessment)
 
@@ -398,11 +263,7 @@ more!
     milsale <- subset(moundsales, moundsales$Sale.Price > 999999)
     View(milsale)
 
-    lakefront <- table(moundsales$Lake.Front)
-    barplot(lakefront)
-
-![](README_files/figure-markdown_strict/unnamed-chunk-21-1.png) \#\#\#
-‘nonlf’ Data Set
+### ‘nonlf’ Data Set
 
     nonlf <- subset(moundsales, moundsales$Lake.Front == 'N')
 
