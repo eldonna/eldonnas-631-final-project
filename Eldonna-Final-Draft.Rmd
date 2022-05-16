@@ -1,7 +1,7 @@
 ---
-title: "Final_Project_Draft"
+title: "SEIS 631 Final Project"
 author: "Eldonna Weber"
-date: "5/3/2022"
+date: "5/15/2022"
 output: pdf_document
 ---
 
@@ -85,7 +85,10 @@ price for non-lake front houses is $324,801.
 ```{r}
 lakefront <- subset(moundsales, moundsales$Lake.Front == 'Y')
 summary(lakefront)
-boxplot(moundsales$Sale.Price ~ moundsales$Lake.Front)
+boxplot((moundsales$Sale.Price ~ moundsales$Lake.Front), main="Sale Price by 
+        Lake Front & Non-Lake Front",
+  xlab="Lake Front",
+  ylab="Sale Price")
 ```
     
 
@@ -100,7 +103,7 @@ dim(under300k)
 ```
 
 
-Of the 46 houses that sold for more than $300,000, 16 had a recent tax 
+Of the 46 houses that sold for under $300,000, 16 had a recent tax 
 assessment of $245,000 or below.
 
 
@@ -157,8 +160,10 @@ There is a 63% probability that my house will sell for over $300k.
 
 
 ```{r}
-format(nonlf$Sale.Price, scientific = FALSE)
-hist(nonlf$Sale.Price)
+options(scipen=999)
+hist((nonlf$Sale.Price), main="Non-Lake Front Sale Price Histogram",
+  ylab="Frequency",
+  xlab="Sale Price")
 ```
 
 ```{r}
@@ -196,8 +201,12 @@ the most recent tax assessment for the house.
 
 
 ```{r}
-plot(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment)
-lm(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment)
+options(scipen=999)
+plot((moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment), main=
+       "Correlation Between Sale Price & Tax Assessment",
+  ylab="Sale Price",
+  xlab="Most Recent Tax Assessment")
+abline(lm(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment))
 summary(lm(moundsales$Sale.Price ~ moundsales$Most.Recent.Tax.Assessment))
 ```
 
@@ -251,10 +260,7 @@ View(milsale)
 ```
 
 
-```{r}
-lakefront <- table(moundsales$Lake.Front)
-barplot(lakefront)
-```
+
 ### 'nonlf' Data Set
 
 ```{r}
